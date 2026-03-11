@@ -3,22 +3,16 @@
 <html>
 
 <head>
-
   <title>IIIF Viewer</title>
   <meta name="viewport"
     content="initial-scale=1.0, width=device-width, user-scalable=yes, minimum-scale=1.0, maximum-scale=2.0">
-
   <link rel="stylesheet" type="text/css" href="viewer_style.css">
-
   <link href="https://fonts.googleapis.com/css?family=Barlow+Condensed:100,200,400&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Teko:wght@300;700&display=swap" rel="stylesheet">
-
   <script src="javascript/openseadragon/openseadragon.min.js"></script>
   <script src="javascript/openseadragon/openseadragon-scalebar.js"></script>
   <script src="javascript/jquery-3.5.1.min.js"></script>
-
-  <style>
-  </style>
+  <script src="javascript/openseadragon-bookmark-url.js"></script>
 </head>
 
 <body>
@@ -44,17 +38,21 @@
       <a id="rotate-right" href="#rotate-right">
         <div id="RotateRight" class="NavButton"></div>
       </a>
-
     </div>
-    <!-- <a id="download" ref="downloadButton" target="_self" href="">
-      <div id="" class="download-button NavButton" title="Download image"></div>
-    </a> -->
+
+    <div id="copy-url" class="round-button share-button" title="Copy link to view" onclick="logPosition()">
+      <div id="share-label" class="label-popup">Link copied</div>
+    </div>
+
+    <a id="download" ref="downloadButton" target="_self" href="">
+      <div class="download-button" title="Download image"></div>
+    </a>
   </div>
 
 
   <!--  These are the regular controls -->
   <div class="interface-area-bottom">
-    <div class="toolbar-bottom" style="">
+    <div class="toolbar-bottom">
 
       <a id="home" href="#home">
         <div id="Home" class="NavButton"></div>
@@ -70,6 +68,50 @@
   </div>
 
   <script type="text/javascript">
+    let urlToCopy = '';
+    let currentRotation = 0;
+
+    function normalizeViewerPath(pathname) {
+      return pathname.replace(/\/index\.html$/, '/');
+    }
+
+    function logPosition() {
+      $('#share-label').addClass('popup-animation').delay(3000).queue(function () {
+        $('#share-label').removeClass('popup-animation').dequeue();
+      });
+
+      if (!viewer || !viewer.viewport) {
+        console.error('Viewer is not ready yet');
+        return;
+      }
+
+      const zoom = viewer.viewport.getZoom();
+      const center = viewer.viewport.getCenter();
+      const rotation = typeof viewer.viewport.getRotation === 'function' ? viewer.viewport.getRotation() : 0;
+      const page = typeof viewer.currentPage === 'function' ? viewer.currentPage() : 0;
+      const hasSequence = Array.isArray(viewer.tileSources) && viewer.tileSources.length > 1;
+
+      const url = new URL(window.location.href);
+      url.pathname = normalizeViewerPath(url.pathname);
+      const hashParams = new URLSearchParams(url.hash.replace(/^#/, ''));
+      hashParams.set('zoom', zoom);
+      hashParams.set('x', center.x);
+      hashParams.set('y', center.y);
+      hashParams.set('rotation', rotation);
+      if (hasSequence) {
+        hashParams.set('page', page);
+      } else {
+        hashParams.delete('page');
+      }
+
+      url.hash = hashParams.toString();
+      urlToCopy = url.toString();
+
+      navigator.clipboard.writeText(urlToCopy)
+        .then(() => console.log(`${urlToCopy} copied to clipboard`))
+        .catch(err => console.error('Could not copy URL:', err));
+    }
+
     var viewer = OpenSeadragon({
       id: "imageviewer",
       immediateRender: false,
@@ -117,6 +159,12 @@
       yOffset: 20,
       stayInsideImage: false,
     });
+    viewer.addHandler('bookmark-url-change', function (event) {
+      const eventUrl = new URL(event.url);
+      eventUrl.pathname = normalizeViewerPath(eventUrl.pathname);
+      urlToCopy = eventUrl.toString();
+    });
+    viewer.bookmarkUrl({ updateUrl: false });
   </script>
 
 </body>
