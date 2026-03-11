@@ -45,7 +45,7 @@
     </div>
 
     <a id="download" ref="downloadButton" target="_self" href="">
-      <div class="download-button" title="Download image"></div>
+      <div class="download-button deactivated" title="Download image"></div>
     </a>
   </div>
 
@@ -70,6 +70,8 @@
   <script type="text/javascript">
     let urlToCopy = '';
     let currentRotation = 0;
+    //uncomment this url to enabled the download button
+    //const imageDownloadUrl = '';
 
     function normalizeViewerPath(pathname) {
       return pathname.replace(/\/index\.html$/, '/');
@@ -110,6 +112,44 @@
       navigator.clipboard.writeText(urlToCopy)
         .then(() => console.log(`${urlToCopy} copied to clipboard`))
         .catch(err => console.error('Could not copy URL:', err));
+    }
+
+    function enableDownloadButton() {
+      var downloadAnchor = $('#download');
+      var downloadButton = $('#download .download-button');
+      downloadAnchor.off('click');
+
+      if (imageDownloadUrl) {
+        downloadButton.removeClass('deactivated');
+        downloadAnchor.attr('href', '#');
+        downloadAnchor.removeAttr('target');
+        downloadAnchor.removeAttr('rel');
+        downloadAnchor.removeAttr('download');
+        downloadAnchor.on('click', async function (event) {
+          event.preventDefault();
+          try {
+            const response = await fetch(imageDownloadUrl);
+            if (!response.ok) throw new Error('Download failed');
+            const blob = await response.blob();
+            const objectUrl = URL.createObjectURL(blob);
+            const filename = imageDownloadUrl.split('/').pop() || 'image';
+            const tempLink = document.createElement('a');
+            tempLink.href = objectUrl;
+            tempLink.download = filename;
+            document.body.appendChild(tempLink);
+            tempLink.click();
+            tempLink.remove();
+            URL.revokeObjectURL(objectUrl);
+          } catch (err) {
+            window.open(imageDownloadUrl, '_blank', 'noopener');
+          }
+        });
+        return;
+      }
+
+      downloadButton.addClass('deactivated');
+      downloadAnchor.removeAttr('download');
+      downloadAnchor.removeAttr('href');
     }
 
     var viewer = OpenSeadragon({
@@ -165,6 +205,7 @@
       urlToCopy = eventUrl.toString();
     });
     viewer.bookmarkUrl({ updateUrl: false });
+    enableDownloadButton();
   </script>
 
 </body>

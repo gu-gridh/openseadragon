@@ -330,6 +330,12 @@ body {
   z-index: 2000;
 }
 
+.download-button.deactivated {
+  opacity: 0.35;
+  filter: grayscale(1);
+  cursor: default;
+}
+
 #RotateLeft {
   background: url(https://data.dh.gu.se/ui-icons/rotate_left_white.png);
   background-size: 45%;
