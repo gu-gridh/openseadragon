@@ -19,6 +19,8 @@ Install Visual Studio Code.
 3. Right-click on the `index.html` file and select **Open with Live Server**.
 ![Start project](./assets/Readme/screenshot3.png)
 
+Your browser will automatically open the application.
+
 Change the image by adjusting this line in index.html.
 ![Change image](./assets/Readme/screenshot4.png)
 
