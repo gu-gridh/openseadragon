@@ -7,9 +7,9 @@ An open-source, web-based viewer for zoomable images, implemented in pure JavaSc
 
 See it in action and get started using it at [https://openseadragon.github.io/][openseadragon].
 
+## Getting Started
 Install Visual Studio Code.
 
-## Getting Started
 1. Click the extensions tab on the left toolbar.
 ![Open extensions](./assets/Readme/screenshot1.png)
 
