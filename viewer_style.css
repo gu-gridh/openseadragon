@@ -111,6 +111,7 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  align-items: center;
   padding-left: 6px;
   padding-right: 6px;
   width: auto;
@@ -159,6 +160,100 @@ body {
   z-index: 2100;
 }
 
+.annotation-tooltip {
+  position: fixed;
+  max-width: 240px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  font-family: "Barlow Condensed", sans-serif !important;
+  font-size: 1rem;
+  line-height: 1.2;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 3000;
+  transition: opacity 0.12s ease-in-out;
+}
+
+.annotation-tooltip.visible {
+  opacity: 1;
+}
+
+.toolbar-text-button {
+  pointer-events: auto;
+  border: 0;
+  border-radius: 6px;
+  background-color: transparent;
+  padding: 0;
+  width: 46px;
+  height: 38px;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 30px;
+}
+
+.toolbar-text-button:hover {
+  background-color: transparent;
+}
+
+.load-popup {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 100px;
+  background-color: rgba(0, 0, 0, 0.22);
+  z-index: 3200;
+}
+
+.load-popup.visible {
+  display: flex;
+}
+
+.load-popup-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: rgba(15, 15, 15, 0.96);
+  color: white;
+  border-radius: 10px;
+  padding: 14px 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.load-popup-title {
+  font-family: "Barlow Condensed", sans-serif !important;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.load-popup-action,
+.load-popup-close {
+  border: 0;
+  border-radius: 6px;
+  font-family: "Barlow Condensed", sans-serif !important;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.load-popup-action {
+  background-color: rgba(91, 186, 123, 0.9);
+  color: white;
+  padding: 8px 14px;
+}
+
+.load-popup-close {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  padding: 0;
+  width: 20px;
+  height: 20px;
+}
+
 #Home {
   background: url(https://data.dh.gu.se/ui-icons/frame_small_white.png);
   background-size: cover;
@@ -190,6 +285,27 @@ body {
   height: 28px;
   cursor: pointer;
   overflow: hidden;
+}
+
+#AnnotateToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 32px;
+  border-radius: 6px;
+  background-image: url(https://data.dh.gu.se/ui-icons/pen_white.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 22px;
+}
+
+#AnnotateToggle.active {
+  background-color: rgba(91, 186, 123, 0.85);
+}
+
+#save-annotations {
+  background-image: url(https://data.dh.gu.se/ui-icons/download_white.png);
 }
 
 #FullPage {
